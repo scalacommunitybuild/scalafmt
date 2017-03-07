@@ -1,7 +1,7 @@
 object a {
   a ::
     b ::
-    c ::
-    d ::
+      c ::
+      d ::
     e
 }
