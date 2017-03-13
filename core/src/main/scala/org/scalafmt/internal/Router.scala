@@ -241,7 +241,8 @@ class Router(formatOps: FormatOps) {
           statementStarts(hash(right)).isInstanceOf[Term.Function]
         Seq(
           Split(Space, 0, ignoreIf = !canBeSpace),
-          Split(Newline, 1).withIndent(2, endOfFunction, Left)
+          Split(if (newlines > 1) Newline2x else Newline, 1)
+            .withIndent(2, endOfFunction, Left)
         )
       case FormatToken(arrow @ RightArrow(), right, _)
           if leftOwner.is[Term.Function] =>

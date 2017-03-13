@@ -191,3 +191,13 @@ pairList.map(pair => {
     .filter(pair => pair._1 != pair._2) // a
     .map(pair => (pair, delta))
 })
+<<< #808
+something.call { x =>
+
+    g(x)
+}
+>>>
+something.call { x =>
+
+  g(x)
+}
