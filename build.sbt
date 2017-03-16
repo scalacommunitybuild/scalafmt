@@ -161,6 +161,7 @@ lazy val core = project
   )
   .dependsOn(utils, testUtils % "test->compile")
   .enablePlugins(BuildInfoPlugin)
+  .enablePlugins(ScalaNativePlugin)
 
 lazy val cliJvmOptions = Seq(
   "-Xss4m"
@@ -183,6 +184,7 @@ lazy val cli = project
     )
   )
   .dependsOn(core % "compile->compile;test->test")
+  .enablePlugins(ScalaNativePlugin)
 
 lazy val is210 = Seq(
   scalaVersion := "2.10.6",
@@ -203,6 +205,7 @@ lazy val bootstrap = project
     )
   )
   .enablePlugins(BuildInfoPlugin)
+  .enablePlugins(ScalaNativePlugin)
 
 lazy val scalafmtSbt = project
   .settings(
@@ -309,6 +312,7 @@ lazy val utils = project.settings(
     "com.typesafe" % "config" % "1.2.1"
   )
 )
+  .enablePlugins(ScalaNativePlugin)
 
 lazy val testUtils = project
   .settings(
@@ -321,3 +325,4 @@ lazy val testUtils = project
     )
   )
   .dependsOn(utils)
+  .enablePlugins(ScalaNativePlugin)
