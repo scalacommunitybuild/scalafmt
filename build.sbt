@@ -5,7 +5,7 @@ addCommandAlias("downloadIdea", "intellij/updateIdea")
 
 lazy val buildSettings = Seq(
   organization := "com.geirsson",
-  version := "0.6.4",
+  version := "0.6.4-native",
   scalaVersion := "2.11.8",
   crossScalaVersions := Seq("2.11.8", "2.12.1"),
   updateOptions := updateOptions.value.withCachedResolution(true)
@@ -74,6 +74,7 @@ lazy val publishSettings = Seq(
         <id>olafurpg</id>
         <name>Ólafur Páll Geirsson</name>
         <url>https://geirsson.com</url>
+      </developer>
       </developer>
     </developers>
 )

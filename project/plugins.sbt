@@ -15,3 +15,4 @@ addSbtPlugin("org.xerial.sbt"     % "sbt-pack"            % "0.8.0")
 addSbtPlugin("com.dancingrobot84" % "sbt-idea-plugin"     % "0.4.2")
 
 libraryDependencies += "org.scala-sbt" % "scripted-plugin" % sbtVersion.value
+addSbtPlugin("org.scala-native" % "sbt-scala-native"  % "0.1.0")
