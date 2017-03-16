@@ -157,7 +157,7 @@ lazy val core = project
       "org.scalatest"                  %% "scalatest"      % Deps.scalatest     % Test
     ),
     addCompilerPlugin(
-      "org.scalamacros" % "paradise" % "2.1.0" cross CrossVersion.full)
+      "org.scalameta" % "paradise" % "3.0.0-M7" cross CrossVersion.full)
   )
   .dependsOn(utils, testUtils % "test->compile")
   .enablePlugins(BuildInfoPlugin)
