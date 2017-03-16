@@ -212,7 +212,7 @@ object Cli {
         )))
     val termDisplay = newTermDisplay(options, inputMethods, termDisplayMessage)
     val N = inputMethods.length
-    inputMethods.par.foreach { inputMethod =>
+    inputMethods.foreach { inputMethod =>
       val inputConfig = if (inputMethod.isSbt) sbtOptions else options
       handleFile(inputMethod, inputConfig)
       termDisplay.taskProgress(termDisplayMessage, counter.incrementAndGet())

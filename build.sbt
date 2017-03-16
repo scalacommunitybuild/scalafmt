@@ -180,7 +180,7 @@ lazy val cli = project
     mainClass in assembly := Some("org.scalafmt.cli.Cli"),
     libraryDependencies ++= Seq(
       "com.martiansoftware" % "nailgun-server" % "0.9.1",
-      "com.github.scopt"    %% "scopt"         % "3.5.0"
+      "com.github.scopt"    %%% "scopt"         % "3.5.0-native"
     )
   )
   .dependsOn(core % "compile->compile;test->test")
@@ -309,7 +309,7 @@ lazy val utils = project.settings(
   allSettings,
   moduleName := "scalafmt-utils",
   libraryDependencies ++= Seq(
-    "com.typesafe" % "config" % "1.2.1"
+    "eu.unicredit" %%% "shocon" % "0.1.7-native"
   )
 )
   .enablePlugins(ScalaNativePlugin)
