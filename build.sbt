@@ -75,7 +75,6 @@ lazy val publishSettings = Seq(
         <name>Ólafur Páll Geirsson</name>
         <url>https://geirsson.com</url>
       </developer>
-      </developer>
     </developers>
 )
 
