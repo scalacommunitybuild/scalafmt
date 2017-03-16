@@ -142,11 +142,12 @@ lazy val core = project
     buildInfoSettings,
     moduleName := "scalafmt-core",
     libraryDependencies ++= Seq(
-      "com.geirsson"   %% "metaconfig-core" % "0.1.2",
-      "com.lihaoyi"    %% "sourcecode"      % "0.1.2",
+      "eu.unicredit"   %%% "shocon" % "0.1.7-native",
+      "com.geirsson"   %%% "metaconfig-core" % "0.1.2-native",
+      "com.lihaoyi"    %% "sourcecode"      % "0.1.3-native",
       "org.scalameta"  %% "scalameta"       % Deps.scalameta,
       "org.scala-lang" % "scala-reflect"    % scalaVersion.value,
-      "com.typesafe"   % "config"           % "1.2.1",
+      // "com.typesafe"   % "config"           % "1.2.1",
       // Test dependencies
       "org.scala-lang"                 % "scala-compiler"  % scalaVersion.value % Test,
       "ch.qos.logback"                 % "logback-classic" % "1.1.6"            % Test,
