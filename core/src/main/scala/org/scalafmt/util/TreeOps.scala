@@ -494,4 +494,13 @@ object TreeOps {
     case Some(e) if e.is[Mod.Annot] => true
     case Some(e) => isAnnotation(e)
   }
+
+  // matches tree nodes that can be considered "top-level statement": package/object/trait/def/val
+  object MaybeTopLevelStat {
+    def unapply(tree: Tree): Option[Tree] = tree match {
+      case _: Pkg | _: Defn | _: Decl => Some(tree)
+      case _ => None
+    }
+  }
+
 }
