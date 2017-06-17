@@ -1,4 +1,7 @@
 package org.scalafmt
+import scala.meta.inputs.Input
+import scala.meta.parsers.ParseException
+import org.scalafmt.Formatted.Failure
 import org.scalafmt.config.ScalafmtConfig
 import org.scalameta.logger
 
@@ -49,4 +52,11 @@ class ScalafmtTest extends org.scalatest.FunSuite {
        |""".stripMargin,
     config.ScalafmtConfig.default40
   )
+
+  test("parse error") {
+    val err = intercept[ParseException] {
+      Scalafmt.formatInput(Input.LabeledString("foo.scala", "object a {")).get
+    }
+    assert(err.fullMessage.contains("foo.scala"))
+  }
 }
