@@ -19,7 +19,7 @@ import org.scalafmt.util.LoggerOps._
   */
 class Scalafmt210 {
   val oldConfig: Regex = "--".r
-  def main(args: Array[String]): Unit = Cli.main(args)
+  def main(args: Array[String]): Unit = Cli.mainExitCode(args)
 
   // The rest is for scalafmtIncremental.
   def format(code: String, configFile: String, filename: String): String = {

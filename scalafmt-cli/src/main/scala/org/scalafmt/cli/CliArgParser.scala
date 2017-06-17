@@ -33,13 +33,16 @@ object CliArgParser {
 
   val scoptParser: OptionParser[CliOptions] =
     new scopt.OptionParser[CliOptions]("scalafmt") {
+      override def terminate(exitState: Either[String, Unit]): Unit =
+        if (exitState.isRight) () // don't kill sbt shell session in --help
+        else super.terminate(exitState)
       override def showUsageOnError = false
 
       private def printAndExit(
           inludeUsage: Boolean)(ignore: Unit, c: CliOptions): CliOptions = {
         if (inludeUsage) showUsage
         else showHeader
-        sys.exit
+        terminate(Right(()))
         c
       }
 

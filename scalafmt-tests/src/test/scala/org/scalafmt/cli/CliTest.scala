@@ -171,7 +171,7 @@ class CliTest extends FunSuite with DiffAssertions {
     val args = Array(
       tmpFile.toFile.getAbsolutePath
     )
-    Cli.main(args)
+    Cli.mainExitCode(args)
     val obtained = FileOps.readFile(tmpFile.toString)
     assertNoDiff(obtained, formatted)
   }
@@ -243,9 +243,8 @@ class CliTest extends FunSuite with DiffAssertions {
   test("scalafmt doesnotexist.scala throws error") {
     def check(filename: String): Unit = {
       val args = Array(s"$filename.scala")
-      intercept[FileNotFoundException] {
-        Cli.main(args)
-      }
+      val exit = Cli.mainExitCode(args)
+      assert(exit == 1)
     }
     check("notfound")
     check("target/notfound")
@@ -415,7 +414,7 @@ class CliTest extends FunSuite with DiffAssertions {
       config,
       toFormat
     )
-    Cli.main(args) // runs without errors
+    Cli.mainExitCode(args) // runs without errors
     val obtained = FileOps.readFile(toFormat)
     assertNoDiff(obtained, "object A\n")
   }

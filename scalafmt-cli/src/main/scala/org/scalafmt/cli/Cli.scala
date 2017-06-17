@@ -3,11 +3,11 @@ package org.scalafmt.cli
 import scala.meta.Dialect
 import scala.meta.dialects.Sbt0137
 import java.io.File
+import java.io.FileNotFoundException
 import java.io.InputStream
 import java.io.OutputStreamWriter
 import java.io.PrintStream
 import java.util.concurrent.atomic.AtomicInteger
-
 import com.martiansoftware.nailgun.NGContext
 import org.scalafmt.Error.UnableToParseCliOptions
 import org.scalafmt.Formatted
@@ -26,7 +26,7 @@ object Cli {
         throw new IllegalStateException(s"Expected absolute path, " +
           s"obtained nGContext.getWorkingDirectory = ${nGContext.getWorkingDirectory}")
       }
-    mainWithOptions(
+    val exit = mainWithOptions(
       nGContext.getArgs,
       CliOptions.default.copy(
         common = CliOptions.default.common.copy(
@@ -37,13 +37,14 @@ object Cli {
         )
       )
     )
+    nGContext.exit(exit)
   }
 
   def main(args: Array[String],
            in: InputStream,
            out: PrintStream,
            err: PrintStream,
-           workingDirectory: String): Unit = {
+           workingDirectory: String): Int = {
     val options = CliOptions.default.copy(
       common = CommonOptions(
         in = in,
@@ -55,14 +56,18 @@ object Cli {
     mainWithOptions(args, options)
   }
 
-  def main(args: Array[String]): Unit = {
-    mainWithOptions(args, CliOptions.default)
-  }
+  def main(args: Array[String]): Unit =
+    sys.exit(mainExitCode(args))
 
-  def mainWithOptions(args: Array[String], options: CliOptions): Unit = {
+  def mainExitCode(args: Array[String]): Int =
+    mainWithOptions(args, CliOptions.default)
+
+  def mainWithOptions(args: Array[String], options: CliOptions): Int = {
     getConfig(args, options) match {
       case Some(x) => run(x)
-      case None    => throw UnableToParseCliOptions
+      case None =>
+        options.common.error(s"Failed to parse options ${args.toList}")
+        1
     }
   }
 
@@ -111,19 +116,19 @@ object Cli {
   private def handleFile(inputMethod: InputMethod, options: CliOptions): Unit = {
     val input = inputMethod.readInput(options.config.encoding)
     val formatResult =
-      Scalafmt.format(input, options.config, options.range)
+      Scalafmt.formatInput(input, options.config, options.range)
     formatResult match {
       case Formatted.Success(formatted) =>
-        inputMethod.write(formatted, input, options)
+        inputMethod.write(formatted, input.chars, options)
+      case Formatted.Failure(e: FileNotFoundException) =>
+        options.common.error(s"${inputMethod.filename} does not exist")
       case Formatted.Failure(e) =>
         if (options.config.runner.fatalWarnings) {
-          throw e
+          options.common.error(e)
         } else if (options.config.runner.ignoreWarnings) {
           // do nothing
         } else {
-          options.common.err.println(
-            s"${LogLevel.warn} Error in ${inputMethod.filename}: $e"
-          )
+          options.common.warning(s"Error in ${inputMethod.filename}: $e")
         }
     }
   }
@@ -147,7 +152,7 @@ object Cli {
     termDisplay
   }
 
-  def run(options: CliOptions): Unit = {
+  def run(options: CliOptions): Int = {
     val inputMethods = getInputMethods(options)
     val counter = new AtomicInteger()
     val termDisplayMessage =
@@ -176,6 +181,8 @@ object Cli {
     if (options.testing) {
       options.common.out.println("All files are formatted with scalafmt :)")
     }
+    if (options.common.hasError) 1
+    else 0
   }
 
 }

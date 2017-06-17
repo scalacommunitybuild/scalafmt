@@ -1,5 +1,6 @@
 package org.scalafmt.sbt
 import sbt._, Keys._
+import org.scalafmt.cli.Cli
 
 object ScalafmtPlugin extends AutoPlugin {
   override def trigger: PluginTrigger = allRequirements
@@ -7,7 +8,10 @@ object ScalafmtPlugin extends AutoPlugin {
     val scalafmt: Command =
       Command.args("scalafmt", "run the scalafmt command line interface.") {
         case (state, args) =>
-          org.scalafmt.cli.Cli.main("--non-interactive" +: args.toArray)
+          val exit = Cli.mainExitCode("--non-interactive" +: args.toArray)
+          if (exit != 0) {
+            sys.error(s"Non-zero exit code=$exit running scalafmt.")
+          }
           state
       }
   }

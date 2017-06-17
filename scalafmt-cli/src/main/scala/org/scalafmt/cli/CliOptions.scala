@@ -2,7 +2,9 @@ package org.scalafmt.cli
 
 import java.io.InputStream
 import java.io.PrintStream
-
+import java.io.PrintWriter
+import java.io.StringWriter
+import java.util.concurrent.atomic.AtomicReference
 import org.scalafmt.config.Config
 import org.scalafmt.config.FilterMatcher
 import org.scalafmt.config.ProjectFiles
@@ -11,6 +13,7 @@ import org.scalafmt.util.AbsoluteFile
 import org.scalafmt.util.FileOps
 import org.scalafmt.util.GitOps
 import org.scalafmt.util.GitOpsImpl
+import org.scalafmt.util.LogLevel
 
 object CliOptions {
   val default = CliOptions()
@@ -74,7 +77,23 @@ case class CommonOptions(
     out: PrintStream = System.out,
     in: InputStream = System.in,
     err: PrintStream = System.err
-)
+) {
+  // This may be ugly but it's a simple fix for how the scalafmt cli is organized.
+  // Ideally, the exit code should be properly propagated as it's done in
+  // for example scalafix. FWIW, the scalac reporter works similar to this.
+  private var _hasError = new AtomicReference[Boolean](false)
+  def error(exception: Throwable): Unit = {
+    val str = new StringWriter()
+    exception.printStackTrace(new PrintWriter(str))
+    error(str.toString)
+  }
+  def error(msg: String): Unit = {
+    _hasError.set(true)
+    err.println(LogLevel.error + s" $msg")
+  }
+  def warning(msg: String): Unit = err.println(LogLevel.warn + s" $msg")
+  def hasError: Boolean = _hasError.get()
+}
 
 case class CliOptions(
     config: ScalafmtConfig = ScalafmtConfig.default,
